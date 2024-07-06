@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafio - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="resources/main.css">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark-subtle">
+      <div class="container-fluid">
+        <p class="navbar-brand cursor-default m-auto">Desafio Gesuas</p>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="container mt-4">
+      <div class="content">
+        <div class="d-flex justify-content-center">
+          <div class="col-12 col-md-8 col-lg-6 border border-success shadow rounded p-4">
+            <div class="row mb-3">
+              <h3 class="fw-light text-center">Adicionar Cidadão</h3>
+            </div>
+
+            <form id="form-new" class="row justify-content-around" action="/api/citizen" method="post">
+              <div class="input-group">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="João da Silva">
+                  <label for="name">Nome Completo</label>
+                </div>
+                <button id="save-btn" type="submit" class="btn btn-outline-success">
+                  <span id="save-btn-spinner" class="d-none spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  <i class="fa-solid fa-person-circle-plus"></i> Salvar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container mt-3 mb-5">
+      <div class="content">
+        <div class="border shadow rounded p-4">
+          <div class="row pos-relative">
+            <h3 class="fw-light text-center">
+              Cidadãos Cadastrados
+            </h3>
+
+            <form action="/" method="get" id="search-form" class="search input-group">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="search-input" placeholder="Buscar por NIS">
+                <label for="search-input">Buscar por NIS</label>
+              </div>
+              <button class="btn btn-outline-secondary" type="submit" title="buscar">
+                <i class="fa-solid fa-search"></i>
+              </button>
+            </form>
+          </div>
+
+          <hr>
+
+          <div class="text-center">
+            <div class="d-flex table-header rounded-pill py-2 cursor-default">
+              <div class="col-3">NIS</div>
+              <div class="col-6">Nome</div>
+              <div class="col-3">Ações</div>
+            </div>
+
+            <ul id="citizen-wrapper" class="list-group list-group-flush">
+              <div id="loader-div" class="d-flex justify-content-center">
+                <div class="spinner-border m-5" style="width: 3rem; height: 3rem;" role="status">
+                  <span class="visually-hidden">Carregando...</span>
+                </div>
+              </div>
+            </ul>
+
+            <input type="hidden" id="offset" value="0">
+
+            <div class="row justify-content-center">
+              <button id="load-btn" class="d-none btn btn-outline-primary col-12 col-md-6 my-3" type="button">
+                <span id="load-btn-spinner" class="d-none spinner-border spinner-border-sm" aria-hidden="true"></span>
+                Carregar mais
+              </button>
+              <button id="back-btn" class="d-none btn btn-outline-primary col-12 col-md-6 my-3" type="button">
+                Voltar para a lista de cidadãos
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="deleteModalLabel">Excluir Cidadão</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body px-4 text-center">
+          <p>Você tem certeza que deseja excluir a(o) cidadã(ão) <span class="fw-bold" id="citizen-name"></span>?</p>
+          <p class="fs-5 text-danger fw-bold">Essa ação não poderá ser desfeita.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="delete-btn" onclick="remove(this)">
+            <span id="delete-btn-spinner" class="d-none spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <i class="fa-solid fa-trash"></i> Excluir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="updateModalLabel">Atualizar cidadão (NIS <span id="citizen-id"></span>)</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body px-4">
+          <form id="update-form">
+            <span class="form-floating mb-3">
+              <input type="text" class="form-control" id="update-name" name="name" placeholder="João da Silva" required>
+              <label for="update-name">Nome Completo</label>
+            </span>
+            <input type="hidden" name="id" id="update-id">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success" id="update-btn" form="update-form">
+            <span id="update-btn-spinner" class="d-none spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <i class="fa-solid fa-floppy-disk"></i> Atualizar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="resources/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,3 @@
+MySQL/data/*
+src/vendor
+src/*.lock

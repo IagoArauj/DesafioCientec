@@ -1,0 +1,15 @@
+{
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "App\\Controllers\\": "App/Controllers",
+            "App\\Models\\": "App/Models",
+            "App\\Services\\": "App/Services",
+            "App\\Renderer\\": "App/Renderer"
+        }
+    }
+}

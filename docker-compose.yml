@@ -1,0 +1,38 @@
+version: '3.1'
+
+name: desafio-cientec
+
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cientec
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    container_name: mysql_db
+    volumes:
+      - ./MySQL/data:/var/lib/mysql
+      - ./MySQL:/docker-entrypoint-initdb.d
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php_web
+    depends_on:
+      - db
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    links:
+      - db
+    environment:
+      - DB_URL=mysql:host=db;dbname=cientec
+      - DB_USER=user
+      - DB_PASS=1234

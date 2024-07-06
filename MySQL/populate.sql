@@ -1,0 +1,7 @@
+USE cientec;
+
+CREATE TABLE IF NOT EXISTS citizens (
+  id INT(11) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  status BOOLEAN DEFAULT 1
+);
